@@ -8,11 +8,13 @@ import android.widget.Toast;
 
 import com.killvetrov.bankcrab.R;
 import com.killvetrov.bankcrab.adapters.BankListAdapter;
+import com.killvetrov.bankcrab.data.SQLiteManager;
 import com.killvetrov.bankcrab.json.JSONParser;
 import com.killvetrov.bankcrab.models.OrganizationModel;
 
 import org.apache.http.HttpResponse;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import ua.com.oncreate.tools.http.Net;
@@ -23,6 +25,8 @@ public class MainActivity extends AppCompatActivity implements ConnectionListene
 
     RecyclerView mRecyclerView;
     BankListAdapter mBankListAdapter;
+
+    private SQLiteManager mSqlManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +43,13 @@ public class MainActivity extends AppCompatActivity implements ConnectionListene
         net.setMethod(Net.GET);
         net.setURL("http://resources.finance.ua/ru/public/currency-cash.json");
         net.connect(this);
+
+        mSqlManager = new SQLiteManager(this);
+        try {
+            mSqlManager.open();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -48,8 +59,11 @@ public class MainActivity extends AppCompatActivity implements ConnectionListene
 
     @Override
     public void onFinishConnection(ConnectInfo info, HttpResponse response, String entity) {
+        ArrayList<OrganizationModel> modelsList = JSONParser.parseOrganizationList(entity);
+        mSqlManager.insertAllOrganizations(modelsList);
+
         mBankListAdapter.clear();
-        mBankListAdapter.addAll(JSONParser.parseOrganizationList(entity));
+        mBankListAdapter.addAll(modelsList);
         mBankListAdapter.notifyDataSetChanged();
         Toast.makeText(MainActivity.this, "All done", Toast.LENGTH_SHORT).show();
     }

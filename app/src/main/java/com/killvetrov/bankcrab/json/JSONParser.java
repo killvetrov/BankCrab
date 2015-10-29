@@ -20,7 +20,16 @@ public class JSONParser {
             JSONObject jsonObjectResponse = new JSONObject(entity);
             JSONArray jsonOrgsArray = jsonObjectResponse.getJSONArray("organizations");
             for (int i = 0; i < jsonOrgsArray.length(); i++) {
-                models.add(new OrganizationModel(0, null, 0, jsonOrgsArray.getJSONObject(i).optString("title"), null, null, null, null, null));
+                models.add(new OrganizationModel(
+                        0,
+                        jsonOrgsArray.getJSONObject(i).optString("id"),
+                        jsonOrgsArray.getJSONObject(i).optInt("orgType"),
+                        jsonOrgsArray.getJSONObject(i).optString("title"),
+                        jsonOrgsArray.getJSONObject(i).optString("regionId"),
+                        jsonOrgsArray.getJSONObject(i).optString("cityId"),
+                        jsonOrgsArray.getJSONObject(i).optString("phone"),
+                        jsonOrgsArray.getJSONObject(i).optString("address"),
+                        jsonOrgsArray.getJSONObject(i).optString("link")));
             }
             return models;
         } catch (JSONException e) {

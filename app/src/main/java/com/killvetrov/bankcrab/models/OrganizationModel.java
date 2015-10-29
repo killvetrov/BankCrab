@@ -1,5 +1,9 @@
 package com.killvetrov.bankcrab.models;
 
+import android.content.ContentValues;
+
+import com.killvetrov.bankcrab.data.SQLiteHelper;
+
 /**
  * Created by Killvetrov on 26-Oct-15.
  */
@@ -28,6 +32,21 @@ public class OrganizationModel {
         this.phone = phone;
         this.link = link;
         this.address = address;
+    }
+
+    public ContentValues getContentValues() {
+        ContentValues cv = new ContentValues();
+
+        cv.put(SQLiteHelper.COLUMN_SERVERID, this.serverId);
+        cv.put(SQLiteHelper.COLUMN_ORGTYPE, this.orgType);
+        cv.put(SQLiteHelper.COLUMN_TITLE, this.title);
+        cv.put(SQLiteHelper.COLUMN_REGIONID, this.regionId);
+        cv.put(SQLiteHelper.COLUMN_CITYID, this.cityId);
+        cv.put(SQLiteHelper.COLUMN_PHONE, this.phone);
+        cv.put(SQLiteHelper.COLUMN_ADDRESS, this.address);
+        cv.put(SQLiteHelper.COLUMN_LINK, this.link);
+
+        return cv;
     }
 
     public long get_id() {
